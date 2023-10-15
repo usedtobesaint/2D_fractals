@@ -1,0 +1,49 @@
+html, body {
+   height: 100%;;
+   margin: 0;
+   padding:0; 
+   overflow: hidden;
+}
+
+.container {
+    display: flex;
+    height: 100%;
+    position: relative;
+    
+}
+
+.left-menu {
+    min-width: 250px;
+    background-color: #CEFFED;
+    height: 100%;
+    left: 0px;
+}
+
+.canvas-container {
+    flex-grow: 1; 
+    background-color: black; 
+    position: relative; 
+    height: 100%;
+    right: 0px; 
+}
+
+#canvas{
+    width: 100%; 
+    height: 100%;
+}
+
+button{
+    padding: 10px 40px;
+    width: 100% ;
+    font-size: 20px;
+}
+
+label, input{
+ color:rgb(0, 0, 0);
+ font-size: 20px;
+}     
+
+.color-picker{
+    position: absolute;
+}
+
