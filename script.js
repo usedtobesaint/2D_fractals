@@ -120,34 +120,31 @@ saveAsGifButton.addEventListener('click', function () {
     encoder.download("download.gif");
 });
   
-function drawBranch(level){
-    let size= canvas.width<canvas.height ? canvas.width*0.25 : canvas.height*0.25;
-    if (level>maxlevel) return;
-    ctx.beginPath();
-    ctx.moveTo (0,0);
-    ctx.lineTo(size, 0);
-    ctx.stroke();
 
-    for (let i=0;i<branches;i++ )
-    {
-    ctx.save();
-    ctx.translate(size-(size/branches)*i,0);
-    ctx.scale(scale,scale);
-
-    ctx.save();
-    ctx.rotate(spread);
-    drawBranch(level+1);
-    ctx.restore();
-
-    ctx.save();
-    ctx.rotate(-spread);
-    drawBranch(level+1);
-    ctx.restore();
-
-    ctx.restore();
+function drawBranchRecursively(level, x = 0, y = 0, angle = 0, size = canvas.width < canvas.height ? canvas.width * 0.25 : canvas.height * 0.25) {
+    if (level > maxlevel) {
+      return;
     }
-}
-
+  
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    const endX = x + Math.cos(angle) * size;
+    const endY = y + Math.sin(angle) * size;
+    ctx.lineTo(endX, endY);
+    ctx.stroke();
+  
+    for (let i = 0; i < branches; i++) {
+      const newAngle = angle + (i / (branches - 1)) * Math.PI * 2 * spread;
+      drawBranch(
+        level + 1,
+        endX,
+        endY,
+        newAngle,
+        size * scale
+      );
+    }
+  }
+  
 function drawFractal(){
     console.time('FractalDrawing');
     ctx.clearRect(0,0, canvas.width, canvas.height);
@@ -157,7 +154,7 @@ function drawFractal(){
     for(let i=0; i<sides;i++){
        
         ctx.rotate((Math.PI*2)/sides); 
-        drawBranch(0); 
+        drawBranchRecursively(0); 
     }
     ctx.restore();
     console.timeEnd('FractalDrawing');
@@ -179,6 +176,12 @@ function drawFractal(){
      sides=Math.floor(Math.random()*18+2);    
      scale=Math.random()*0.2+0.4;
      spread=Math.random()*3+0.1;
+     const red = Math.floor(Math.random() * 256);
+     const green = Math.floor(Math.random() * 256);
+     const blue = Math.floor(Math.random() * 256);
+     const alpha= "0." + Math.floor(Math.random() * 9).toString() + Math.floor(Math.random() * 10).toString();
+     fractalColor = `rgba(${red}, ${green}, ${blue},${alpha})`;  
+     pickr.setColor(fractalColor);
      drawFractal();
     }
     
@@ -222,12 +225,13 @@ function drawFractal(){
         showAlways:true,
         autoReposition: false,
         useAsButton: true,
+        
     
         components: {
     
             // Main components
             preview: true,
-            opacity: false,
+            opacity: true,
             hue: true,
     
             // Input / output Options
@@ -237,7 +241,7 @@ function drawFractal(){
                 hsla: false,
                 hsva: false,
                 cmyk: false,
-                input: true,
+                input: false,
                 clear: false,
                 save: false
             }
